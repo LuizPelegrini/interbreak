@@ -16,6 +16,7 @@ interface ChallengeContextData {
   currentExperience: number;
   challengesCompleted: number;
   activeChallenge: Challenge;
+  experienceToNextLevel: number;
   levelUp: () => void;
   startNewChallenge: () => void;
   resetChallenge: () => void;
@@ -35,6 +36,9 @@ export function ChallengeContextProvider({ children }: ChallengeProviderProps){
   const [currentExperience, setCurrentExperience] = useState(0);
   const [challengesCompleted, setChallengeCompleted] = useState(0);
   const [activeChallenge, setActiveChallenge] = useState(null);
+
+  // based on RPG's formula, calculate the experience for the next level
+  const experienceToNextLevel = Math.pow((level + 1) * 4, 2)
 
   // get a random challenge from the pool
   function startNewChallenge(){
@@ -63,6 +67,7 @@ export function ChallengeContextProvider({ children }: ChallengeProviderProps){
       startNewChallenge,
       activeChallenge,
       resetChallenge,
+      experienceToNextLevel
     }}>
       {children}
     </ChallengeContext.Provider>
