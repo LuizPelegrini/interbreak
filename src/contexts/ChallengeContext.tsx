@@ -1,4 +1,4 @@
-import { useState, createContext, ReactNode } from 'react';
+import { useState, createContext, ReactNode, useEffect } from 'react';
 
 import challenges from '../../challenges.json';
 
@@ -41,12 +41,26 @@ export function ChallengeContextProvider({ children }: ChallengeProviderProps){
   // based on RPG's formula, calculate the experience for the next level
   const experienceToNextLevel = Math.pow((level + 1) * 4, 2)
 
+  useEffect(() => {
+    Notification.requestPermission();
+  });
+
   // get a random challenge from the pool
   function startNewChallenge(){
     const randomIndex = Math.floor(Math.random() * challenges.length);
     const newChallenge = challenges[randomIndex];
     // set new active challenge. This info is used in the ChallengeBox component to show the info of the challenge
     setActiveChallenge(newChallenge);
+
+    // play notification sound
+    new Audio('/notification.mp3').play();
+
+    // show a notification
+    if(Notification.permission === 'granted'){
+      new Notification('New Challenge 🎉', {
+        body: `Earn ${newChallenge.amount}xp!`
+      });
+    }
   }
 
   function levelUp(){
