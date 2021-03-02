@@ -53,14 +53,17 @@ export function ChallengeContextProvider({ children }: ChallengeProviderProps){
     setLevel(level + 1);
   }
 
-  // used when the user fails to complete the challenge
+  // used when the user FAILS to complete the challenge
   function resetChallenge(){
     setActiveChallenge(null);
   }
 
+  // used when the user COMPLETES the challenge
   function completeChallenge(){
+    // Make sure there is an active state
     if(!activeChallenge) return;
 
+    // Retrieves the amount of experience from the active challenge
     const { amount } = activeChallenge;
 
     let finalExperience = currentExperience + amount;
@@ -75,7 +78,6 @@ export function ChallengeContextProvider({ children }: ChallengeProviderProps){
     setCurrentExperience(finalExperience); // updates the current experience
     setActiveChallenge(null); // removes an active challenge
     setChallengeCompleted(challengesCompleted + 1); // adds to the challenge completed state
-
   }
 
   // Provider of this context

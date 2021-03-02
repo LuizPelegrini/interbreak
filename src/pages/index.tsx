@@ -7,6 +7,7 @@ import Countdown from '../components/Countdown';
 import ChallengeBox from '../components/ChallengeBox';
 
 import styles from '../styles/pages/Home.module.css';
+import { CountdownContextProvider } from '../contexts/CountdownContext';
 
 export default function Home() {
   return (
@@ -17,16 +18,19 @@ export default function Home() {
       </Head>
       <ExperienceBar />
 
-      <section>
-        <div>
-          <Profile />
-          <CompletedChallenges />
-          <Countdown />
-        </div>
-        <div>
-          <ChallengeBox />
-        </div>
-      </section>
+      {/* Only the Countdown and ChallengeBox components need to access the Countdown context. To call the resetCountdown function and to display the time */}
+      <CountdownContextProvider>
+        <section>
+          <div>
+            <Profile />
+            <CompletedChallenges />
+            <Countdown />
+          </div>
+          <div>
+            <ChallengeBox />
+          </div>
+        </section>
+      </CountdownContextProvider>
 
     </div>
   );

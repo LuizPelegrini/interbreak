@@ -5,6 +5,7 @@
 import '../styles/global.css';
 
 import { ChallengeContextProvider } from '../contexts/ChallengeContext';
+import { CountdownContextProvider } from '../contexts/CountdownContext';
 
 function MyApp({ Component, pageProps }) {
   return (

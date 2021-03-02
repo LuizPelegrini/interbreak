@@ -1,48 +1,24 @@
-import { useContext, useEffect, useState } from 'react';
-import { ChallengeContext } from '../contexts/ChallengeContext';
-import styles from '../styles/components/Countdown.module.css';
+import { useContext } from 'react';
 
-let countdownTimeout: NodeJS.Timeout;
+import styles from '../styles/components/Countdown.module.css';
+import { CountdownContext } from '../contexts/CountdownContext';
 
 export default function Countdown(){
-  // needed so we can call startNewChallenge()
-  const { startNewChallenge } = useContext(ChallengeContext);
-
-  const [time, setTime] = useState(0.05 * 60);
-  const [isActive, setIsActive] = useState(false); // whether the countdown is paused or resumed
-  const [hasFinished, setHasFinished] = useState(false); // whether the countdown has finished or not
-
-  const minutes = Math.floor( time / 60);
-  const seconds = time % 60;
+  // import the functions and data from the countdown context
+  const {
+    minutes,
+    seconds,
+    hasFinished,
+    isActive,
+    startCountdown,
+    resetCountdown
+  } = useContext(CountdownContext);
 
   // example: minutes = 6
   // 6 -> '6' -> '06' -> ['0', '6']
   const [minuteLeft, minuteRight] = String(minutes).padStart(2, '0').split('');
   const [secondLeft, secondRight] = String(seconds).padStart(2, '0').split('');
 
-  useEffect(() => {
-    if(isActive && time > 0){
-      countdownTimeout = setTimeout(() => {
-        setTime(time - 1); // this will make this component re-render itself, changin its values
-      }, 1000);
-    } else if(isActive && time === 0){
-      setHasFinished(true);
-      setIsActive(false);
-      startNewChallenge();
-    }
-
-  }, [isActive, time]); // make sure the time is set as dependency so the useEffect is called whenever time changes
-
-  function handleStartCountdown(){
-    setIsActive(true);
-  }
-
-  function handleCancelCountdown(){
-    // force setTimeout to not execute the callback function
-    clearTimeout(countdownTimeout);
-    setIsActive(false);
-    setTime(25 * 60);
-  }
 
   return (
     <div>
@@ -70,14 +46,14 @@ export default function Countdown(){
             <button
               type="button"
               className={styles.countdownButton}
-              onClick={handleStartCountdown}>
+              onClick={startCountdown}>
               Start new cycle
             </button>
           ) : (
             <button
               type="button"
               className={`${styles.countdownButton} ${styles.countdownButtonActive}`}
-              onClick={handleCancelCountdown}>
+              onClick={resetCountdown}>
               Cancel cycle
             </button>
           )
