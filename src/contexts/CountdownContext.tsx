@@ -27,7 +27,7 @@ export function CountdownContextProvider({children}: CountdownProviderProps){
   // needed so we can call startNewChallenge() from the Challenge Context
   const { startNewChallenge } = useContext(ChallengeContext);
 
-  const [time, setTime] = useState(0.05 * 60);
+  const [time, setTime] = useState(25 * 60);
   const [isActive, setIsActive] = useState(false); // whether the countdown is paused or resumed
   const [hasFinished, setHasFinished] = useState(false); // whether the countdown has finished or not
 
@@ -55,7 +55,7 @@ export function CountdownContextProvider({children}: CountdownProviderProps){
     // force setTimeout to not execute the callback function
     clearTimeout(countdownTimeout);
     setIsActive(false);
-    setTime(0.05 * 60);
+    setTime(25 * 60);
     setHasFinished(false);
   }
 
