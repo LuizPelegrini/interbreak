@@ -2,6 +2,7 @@ import { useState, createContext, ReactNode, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
 import challenges from '../../challenges.json';
+import { LevelUpModal } from '../components/LevelUpModal';
 
 interface Challenge{
   type: 'body' | 'eye';
@@ -22,6 +23,7 @@ interface ChallengeContextData {
   startNewChallenge: () => void;
   resetChallenge: () => void;
   completeChallenge: () => void;
+  closeLevelUpModal: () => void;
 }
 
 // create a context to share information about the challenges among components
@@ -47,6 +49,7 @@ export function ChallengeContextProvider({
   const [currentExperience, setCurrentExperience] = useState(cookieExp ?? 0);
   const [challengesCompleted, setChallengeCompleted] = useState(cookieChallengesCompleted ?? 0);
   const [activeChallenge, setActiveChallenge] = useState(null);
+  const [isLevelModalOpened, setIsLevelModalOpened] = useState(false);
 
   // based on RPG's formula, calculate the experience for the next level
   const experienceToNextLevel = Math.pow((level + 1) * 4, 2)
@@ -83,6 +86,7 @@ export function ChallengeContextProvider({
 
   function levelUp(){
     setLevel(level + 1);
+    setIsLevelModalOpened(true);
   }
 
   // used when the user FAILS to complete the challenge
@@ -112,6 +116,10 @@ export function ChallengeContextProvider({
     setChallengeCompleted(challengesCompleted + 1); // adds to the challenge completed state
   }
 
+  function closeLevelUpModal(){
+    setIsLevelModalOpened(false);
+  }
+
   // Provider of this context
   return (
     <ChallengeContext.Provider value={{
@@ -124,8 +132,10 @@ export function ChallengeContextProvider({
       resetChallenge,
       experienceToNextLevel,
       completeChallenge,
+      closeLevelUpModal
     }}>
       {children}
+      { isLevelModalOpened &&  <LevelUpModal />}
     </ChallengeContext.Provider>
   );
 }
