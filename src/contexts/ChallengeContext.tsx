@@ -1,4 +1,5 @@
 import { useState, createContext, ReactNode, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 import challenges from '../../challenges.json';
 
@@ -28,22 +29,39 @@ export const ChallengeContext = createContext({} as ChallengeContextData);
 
 interface ChallengeProviderProps{
   children: ReactNode;
+  level: number;
+  currentExperience: number;
+  challengesCompleted: number;
 }
 
 // This function will return a Provider of the ChallengeContext
-// It will "provide" the level and a function to level up
-export function ChallengeContextProvider({ children }: ChallengeProviderProps){
-  const [level, setLevel] = useState(1);
-  const [currentExperience, setCurrentExperience] = useState(0);
-  const [challengesCompleted, setChallengeCompleted] = useState(0);
+// It will "provide" the level and functions to level up, start challenge, complete challenge...
+export function ChallengeContextProvider({
+  children,
+  level: cookieLevel,
+  currentExperience: cookieExp,
+  challengesCompleted: cookieChallengesCompleted
+}: ChallengeProviderProps){
+  // initialize data coming from cookies
+  const [level, setLevel] = useState(cookieLevel ?? 1);
+  const [currentExperience, setCurrentExperience] = useState(cookieExp ?? 0);
+  const [challengesCompleted, setChallengeCompleted] = useState(cookieChallengesCompleted ?? 0);
   const [activeChallenge, setActiveChallenge] = useState(null);
 
   // based on RPG's formula, calculate the experience for the next level
   const experienceToNextLevel = Math.pow((level + 1) * 4, 2)
 
+  // request notification permission
   useEffect(() => {
     Notification.requestPermission();
-  });
+  }, []);
+
+  // whenever the level, experience or challengesCompleted changes, we must save in the cookies
+  useEffect(() => {
+    Cookies.set('level', String(level));
+    Cookies.set('currentExperience', String(currentExperience));
+    Cookies.set('challengesCompleted', String(challengesCompleted));
+  }, [level, currentExperience, challengesCompleted]);
 
   // get a random challenge from the pool
   function startNewChallenge(){
